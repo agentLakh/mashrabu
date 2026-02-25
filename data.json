@@ -37,8 +37,21 @@
         {
           "id": 5,
           "nom": "Son 5 - Hada iqul fadâ ili ",
-          "url": "https://cloudinary.com/ton-son-3.mp3",
+          "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772055414/Hada_iqul_fada%CC%82_ili_kurel_Mashrabuc%CC%A7_C%CC%A7a%CC%82fi%CC%82_Hizbut-Tarqiyyah_1e_Jour_Ramadan_2026_1447h._R9I-ul6-0vw_frajvb.mp3",
           "duree": "35:58",
+          "type": "Kourel"
+        }
+      ]
+    },
+    {
+      "jour": 2,
+      "titre": "Kourel Nurud Darayni Touba",
+      "sons": [
+        {
+          "id": 1,
+          "nom": "Son 1 - Khassida Ramadan",
+          "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772056451/J02_KHASSIDA_RAMADAN_HT_KUREL_NURUD_DARAYNI_HT_TOUBA_zu4ofn.mp3",
+          "duree": "4:30",
           "type": "Kourel"
         }
       ]
