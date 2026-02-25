@@ -422,8 +422,10 @@ async function initJour1Page() {
 }
 
 function jour1InitAudioPlayer(track) {
-  const audio = new Audio(track.url);
-  audio.preload = 'metadata';
+  const audio = new Audio();
+  audio.crossOrigin = "anonymous";  // ← fix CORS Cloudinary
+  audio.preload = 'none';
+  audio.src = track.url;
   jour1PageState.audioElements[track.id] = audio;
 
   audio.addEventListener('ended', () => {
