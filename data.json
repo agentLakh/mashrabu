@@ -13,14 +13,14 @@
         },
         {
           "id": 2,
-          "nom": "Son 2 - Qasaaid Traditionnels",
+          "nom": "Son 2 - Matlabu Chifâ-i",
           "url": "https://cloudinary.com/ton-son-2.mp3",
           "duree": "6:15",
           "type": "Poésie"
         },
         {
           "id": 3,
-          "nom": "Son 3 - Madih Nabawi",
+          "nom": "Son 3 - Lamyabdou",
           "url": "https://cloudinary.com/ton-son-3.mp3",
           "duree": "5:45",
           "type": "Madih"
