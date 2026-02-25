@@ -2,8 +2,27 @@
 
     /* ── Header carré jour ── */
     .w-20.h-20 {
-      width: 56px !important;
-      height: 56px !important;
+        width: 44px !important;
+        height: 44px !important;
+    }
+    .w-20.h-20 .text-3xl {
+        font-size: 1rem !important;
+        line-height: 1 !important;
+    }
+    .w-20.h-20 .text-xs {
+        font-size: 0.5rem !important;
+        text-align: center !important;
+    }
+    
+    /* Header padding et titres */
+    header {
+        padding: 12px !important;
+    }
+    header h1 {
+        font-size: 1.1rem !important;
+    }
+    header h2 {
+        font-size: 0.85rem !important;
     }
     .w-20.h-20 .text-3xl {
       font-size: 1.2rem !important;
@@ -62,14 +81,18 @@
     }
   
     /* Cacher les infos secondaires (durée, type) sauf MP3 */
-  /* Cacher les infos secondaires (durée, type) sauf MP3 */
-.audio-row .space-x-3 > span:not(:last-child),
-.audio-row .space-x-3 > .w-1 {
-    display: none !important;
+/* Garder durée + badge + MP3 mais plus petits */
+.audio-row .space-x-3 {
+    gap: 4px !important;
 }
-.audio-row .space-x-3 > span:last-child {
-    display: inline !important;
-    font-size: 0.65rem !important;
+.audio-row .space-x-3 > span,
+.audio-row .space-x-3 > .w-1 {
+    display: inline-flex !important;
+    font-size: 0.6rem !important;
+}
+.audio-row .space-x-3 .border {
+    padding: 0 4px !important;
+    font-size: 0.55rem !important;
 }
   
     /* Boutons play/download */
