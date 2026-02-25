@@ -438,10 +438,9 @@ function jour1InitAudioPlayer(track) {
 function jour1TogglePlay(trackId) {
   const row = document.getElementById(`track-${trackId}`);
   const btn = document.getElementById(`play-btn-${trackId}`);
-  const icon = btn ? btn.querySelector('i') : null;
   const audio = jour1PageState.audioElements[trackId];
 
-  if (!audio || !row || !btn || !icon) return;
+  if (!audio || !row || !btn) return;
 
   if (
     jour1PageState.currentlyPlaying &&
@@ -454,7 +453,7 @@ function jour1TogglePlay(trackId) {
     audio.pause();
     jour1PageState.currentlyPlaying = null;
     row.classList.remove('playing');
-    icon.setAttribute('data-lucide', 'play');
+    btn.innerHTML = '<i data-lucide="play" class="w-5 h-5 ml-0.5"></i>';
     jour1HideMobilePlayer();
   } else {
     audio.play().catch((e) => {
@@ -462,7 +461,7 @@ function jour1TogglePlay(trackId) {
     });
     jour1PageState.currentlyPlaying = trackId;
     row.classList.add('playing');
-    icon.setAttribute('data-lucide', 'pause');
+    btn.innerHTML = '<i data-lucide="pause" class="w-5 h-5"></i>';
 
     const titleEl = row.querySelector('h4');
     jour1ShowMobilePlayer(titleEl ? titleEl.textContent : 'Lecture en cours...');
@@ -472,7 +471,6 @@ function jour1TogglePlay(trackId) {
     window.lucide.createIcons();
   }
 }
-
 function jour1StopAllAudio() {
   if (!jour1PageState.currentlyPlaying) return;
 
