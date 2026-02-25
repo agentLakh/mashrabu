@@ -281,10 +281,13 @@ function jourPageStopAllAudio() {
 }
 
 function jourPageDownloadTrack(trackId, title) {
-  const blob = new Blob(['Contenu audio placeholder - ' + title], {
-    type: 'audio/mpeg'
-  });
-  const url = URL.createObjectURL(blob);
+  const audio = document.getElementById(`audio-${trackId}`);
+  if (!audio) return;
+
+  const source = audio.querySelector ? audio.querySelector('source') : null;
+  const url = (source && source.src) || audio.src;
+  if (!url) return;
+
   const a = document.createElement('a');
   a.href = url;
   a.download = `Jour${getDayNumberFromLocation()}_Son${trackId}_${title.replace(
@@ -294,7 +297,6 @@ function jourPageDownloadTrack(trackId, title) {
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-  URL.revokeObjectURL(url);
 
   const btn = document.getElementById(`download-btn-${trackId}`);
   if (!btn) return;
@@ -491,8 +493,10 @@ function jour1StopAllAudio() {
 }
 
 function jour1DownloadTrack(trackId, title) {
-  const blob = new Blob(['Contenu audio: ' + title], { type: 'audio/mpeg' });
-  const url = URL.createObjectURL(blob);
+  const audio = jour1PageState.audioElements[trackId];
+  if (!audio || !audio.src) return;
+
+  const url = audio.src;
   const a = document.createElement('a');
   a.href = url;
   a.download = `Jour${getDayNumberFromLocation()}_Son${trackId}_${title.replace(
@@ -502,7 +506,6 @@ function jour1DownloadTrack(trackId, title) {
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-  URL.revokeObjectURL(url);
 
   const btn = document.getElementById(`download-btn-${trackId}`);
   if (!btn) return;
