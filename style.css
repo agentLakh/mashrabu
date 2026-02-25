@@ -83,7 +83,7 @@
     /* Cacher les infos secondaires (durée, type) sauf MP3 */
 /* Garder durée + badge + MP3 mais plus petits */
 .audio-row .space-x-3 {
-    gap: 4px !important;
+    gap: 2px !important;
 }
 .audio-row .space-x-3 > span,
 .audio-row .space-x-3 > .w-1 {
