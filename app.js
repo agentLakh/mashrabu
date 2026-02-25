@@ -33,7 +33,7 @@ function initIndexPage() {
   // Configuration des jours avec titres spécifiques
   const dayTitles = [
     'Kourel Mashrabuç Çâfî',
-    'Kourel Hizbut-Tarqiyyah',
+    'Kourel Nurud Darayni Touba',
     'Kourel Taalim',
     "Kourel Da'wa",
     'Kourel Khidma',
