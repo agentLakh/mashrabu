@@ -62,14 +62,15 @@
     }
   
     /* Cacher les infos secondaires (durée, type) sauf MP3 */
-    .audio-row .space-x-3 > span:not(:last-child),
-    .audio-row .space-x-3 > .w-1 {
-      display: none !important;
-    }
-    .audio-row .space-x-3 > span:last-child {
-      display: inline !important;
-      font-size: 0.65rem !important;
-    }
+  /* Cacher les infos secondaires (durée, type) sauf MP3 */
+.audio-row .space-x-3 > span:not(:last-child),
+.audio-row .space-x-3 > .w-1 {
+    display: none !important;
+}
+.audio-row .space-x-3 > span:last-child {
+    display: inline !important;
+    font-size: 0.65rem !important;
+}
   
     /* Boutons play/download */
     .audio-row .btn-icon,
