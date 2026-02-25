@@ -1,0 +1,32 @@
+{
+  "jours": [
+    {
+      "jour": 1,
+      "titre": "Kourel Mashrabuç Çâfî",
+      "sons": [
+        {
+          "id": 1,
+          "nom": "Son 1 - Yakhyra Dayfi",
+          "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772042351/Yakhyra_dayfi_iazol5.webm",
+          "duree": "5:18",
+          "type": "Kourel"
+        },
+        {
+          "id": 2,
+          "nom": "Son 2 - Qasaaid Traditionnels",
+          "url": "https://cloudinary.com/ton-son-2.mp3",
+          "duree": "6:15",
+          "type": "Poésie"
+        },
+        {
+          "id": 3,
+          "nom": "Son 3 - Madih Nabawi",
+          "url": "https://cloudinary.com/ton-son-3.mp3",
+          "duree": "5:45",
+          "type": "Madih"
+        }
+      ]
+    }
+  ]
+}
+
