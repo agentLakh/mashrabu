@@ -86,7 +86,7 @@ function initIndexPage() {
           <p class="text-white font-medium leading-snug text-emerald-100">${dayTitles[i - 1]}</p>
           <div class="mt-4 flex items-center text-xs text-emerald-400/70">
               <i data-lucide="headphones" class="w-3 h-3 mr-1"></i>
-              <span>10 pistes audio</span>
+              <span>5 pistes audio</span>
           </div>
       </div>
     `;
