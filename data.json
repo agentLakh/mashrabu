@@ -14,15 +14,31 @@
         {
           "id": 2,
           "nom": "Son 2 - Matlabu Chifâ-i",
-          "url": "https://cloudinary.com/ton-son-2.mp3",
-          "duree": "6:15",
+          "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772054427/Matlabu_chifa%CC%82_i_kurel_Mashrabuc%CC%A7_C%CC%A7a%CC%82fi%CC%82_Hizbut-Tarqiyyah_1e_Jour_Ramadan_2026_1447h._p5IxU98_Y7s_sgojsf.mp3",
+          "duree": "6:06",
           "type": "Kourel"
         },
         {
           "id": 3,
           "nom": "Son 3 - Lamyabdou",
+          "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772053456/Lamyabdou_kurel_Mashrabuc%CC%A7_C%CC%A7a%CC%82fi%CC%82_Hizbut-Tarqiyyah_1e_Jour_Ramadan_2026_1447h._1UJyfjXrVBY_vrtwnj.mp3",
+          "duree": "2:24",
+          "type": "Kourel"
+        },
+
+        {
+          "id": 4,
+          "nom": "Son 4 - Barakali Nafihou",
+          "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772053467/Barakali_nafihou_kurel_Mashrabuc%CC%A7_C%CC%A7a%CC%82fi%CC%82_Hizbut-Tarqiyyah_1e_Jour_Ramadan_2026_1447h._SiudR9naxp4_u3vqkj.mp3",
+          "duree": "2:42",
+          "type": "Kourel"
+        },
+
+        {
+          "id": 5,
+          "nom": "Son 5 - Hada iqul fadâ ili ",
           "url": "https://cloudinary.com/ton-son-3.mp3",
-          "duree": "5:45",
+          "duree": "35:58",
           "type": "Kourel"
         }
       ]

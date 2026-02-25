@@ -83,7 +83,7 @@
     /* Cacher les infos secondaires (durée, type) sauf MP3 */
 /* Garder durée + badge + MP3 mais plus petits */
 .audio-row .space-x-3 {
-    gap: 2px !important;
+    gap: 1px !important;
 }
 .audio-row .space-x-3 > span,
 .audio-row .space-x-3 > .w-1 {
@@ -125,5 +125,21 @@
     /* ── Player bar fixe en bas ── */
     #playerBar {
       padding-bottom: calc(12px + env(safe-area-inset-bottom)) !important;
+    }
+  }
+  @media (max-width: 640px) {
+    .w-20.h-20 {
+      width: 44px !important;
+      height: 44px !important;
+      overflow: hidden !important;
+    }
+    .w-20.h-20 .text-3xl,
+    .w-20.h-20 .text-4xl {
+      font-size: 0.95rem !important;
+      line-height: 1 !important;
+    }
+    .w-20.h-20 .text-xs {
+      font-size: 0.5rem !important;
+      line-height: 1.1 !important;
     }
   }
