@@ -29,7 +29,7 @@ async function loadCatalogue() {
 // Page d'accueil (index)
 // =========================
 
-function initIndexPage() {
+async function initIndexPage() {
   // Configuration des jours avec titres spécifiques
   const dayTitles = [
     'Kourel Mashrabuç Çâfî',
@@ -67,7 +67,18 @@ function initIndexPage() {
   const grid = document.getElementById('daysGrid');
   if (!grid) return;
 
+  const catalogue = await loadCatalogue();
+  const jours = Array.isArray(catalogue.jours) ? catalogue.jours : [];
+
   for (let i = 1; i <= 30; i++) {
+    const dayData = jours.find((j) => j.jour === i);
+    const trackCount =
+      dayData && Array.isArray(dayData.sons) ? dayData.sons.length : 0;
+    const trackLabel =
+      trackCount === 0
+        ? '0 piste'
+        : `${trackCount} piste${trackCount > 1 ? 's' : ''}`;
+
     const card = document.createElement('a');
     card.href = `jour1.html?day=${i}`;
     card.className =
@@ -86,7 +97,7 @@ function initIndexPage() {
           <p class="text-white font-medium leading-snug text-emerald-100">${dayTitles[i - 1]}</p>
           <div class="mt-4 flex items-center text-xs text-emerald-400/70">
               <i data-lucide="headphones" class="w-3 h-3 mr-1"></i>
-              <span>5 pistes audio</span>
+              <span>${trackLabel} audio</span>
           </div>
       </div>
     `;
