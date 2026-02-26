@@ -354,6 +354,69 @@
           "type": "Kourel"
         }
       ]
+    },
+    {
+      "jour": 8,
+      "titre": "Kourel Serigne Saliou Mbacke",
+      "titre_ar": "الكورال نور الدارين بارسيل",
+      "sons": [
+        {
+          "id": 1,
+          "nom": "Son 1 - Lamyabdou",
+          "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772135366/J08_LAMYABDU_S_MBAYE_DIOP_KUREL_SERIGNE_SALIOU_MBACKE_HT_fhwvve.mp3",
+          "duree": "2:23",
+          "type": "Kourel"
+        },
+        {
+          "id": 2,
+          "nom": "Son 2 - Yakhayra Dayfi",
+          "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772135465/J08_YAKHAYRA_WKSM_KUREL_SERIGNE_SALIOU_MBACKE_HT_alnzjh.mp3",
+          "duree": "5:06",
+          "type": "Kourel"
+        },
+        {
+          "id": 3,
+          "nom": "Son 3 - Rahiyah",
+          "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772135443/J08_RAHIYAH_S_MOR_MASSAMBA_DIOP_KUREL_SERIGNE_SALIOU_MBACKE_HT_btlqiw.mp3",
+          "duree": "21:49",
+          "type": "Kourel"
+        },
+        {
+          "id": 4,
+          "nom": "Son 4 - Ikfini",
+          "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772135428/J08_BISMILAHI_IKFINI_S_TAFSIR_DIOP_KUREL_SERIGNE_SALIOU_MBACKE_HT_htpwbk.mp3",
+          "duree": "12:55",
+          "type": "Kourel"
+        },
+        {
+          "id": 5,
+          "nom": "Son 5 - Ajabani & Yamanbi",
+          "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772135373/J08_AJABANI_YAMANBI_AMDAHIHI_S_CISSE_KUREL_SERIGNE_SALIOU_MBACKE_utayns.mp3",
+          "duree": "4:10",
+          "type": "Kourel"
+        },
+        {
+          "id": 6,
+          "nom": "Son 6 - Alalmountaqa",
+          "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772135370/J08_ALALMOUNTAQA_WKSM_KUREL_SERIGNE_SALIOU_MBACKE_HT_jeq05h.mp3",
+          "duree": "7:38",
+          "type": "Kourel"
+        },
+        {
+          "id": 7,
+          "nom": "Son 7 - Chahru Ramadan",
+          "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772135365/J08_CHAHRU_RAMADAN_S_B_SENE_KUREL_SERIGNE_SALIOU_MBACKE_HT_xr3vzc.mp3",
+          "duree": "2:53",
+          "type": "Kourel"
+        },
+        {
+          "id": 8,
+          "nom": "Son 8 - Farij",
+          "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772135376/J08_FARIJ_HT_KUREL_SERIGNE_SALIOU_MBACKE_HT_ubloug.mp3",
+          "duree": "2:12",
+          "type": "Kourel"
+        }
+      ]
     }
   ]
 }
