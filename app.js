@@ -640,13 +640,13 @@ function jour1ShowGlobalPlayer(trackId, audio, title) {
   // Play / Pause depuis le contrôleur global
   playPauseBtn.onclick = () => {
     if (audio.paused) {
-      audio.play().catch((err) => console.log('Lecture globale :', err));
-      playPauseBtn.innerHTML = '<i data-lucide="pause" class="w-4 h-4"></i>';
+        audio.play().catch((err) => console.log('Lecture globale :', err));
+        playPauseBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
     } else {
-      audio.pause();
-      playPauseBtn.innerHTML = '<i data-lucide="play" class="w-4 h-4"></i>';
+        audio.pause();
+        playPauseBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>';
     }
-  };
+};
 
   // Stop: arrêter et masquer le contrôleur
   stopBtn.onclick = () => {
