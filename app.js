@@ -185,7 +185,6 @@ async function initJourPage() {
       </audio>
       <div class="flex items-center space-x-2">
           <button id="play-btn-${track.id}"
-                  onclick="event.stopPropagation(); jourPageTogglePlay(${track.id})"
                   class="btn-icon w-12 h-12 rounded-full bg-emerald-100 hover:bg-emerald-200 flex items-center justify-center text-emerald-700 shadow-sm"
                   title="Lecture">
               <i data-lucide="play" class="w-5 h-5 ml-0.5"></i>
@@ -201,6 +200,21 @@ async function initJourPage() {
       </div>
     `;
       audioList.appendChild(row);
+
+      const playBtn = document.getElementById(`play-btn-${track.id}`);
+if (playBtn) {
+  playBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    jour1TogglePlay(track.id);
+  });
+}
+
+const rowEl = document.getElementById(`track-${track.id}`);
+if (rowEl) {
+  rowEl.querySelector('.flex-1')?.addEventListener('click', () => {
+    jour1TogglePlay(track.id);
+  });
+}
 
       const audio = document.getElementById(`audio-${track.id}`);
       if (audio) {
@@ -344,7 +358,8 @@ function jourPageHideMobilePlayer() {
 
 const jour1PageState = {
   currentlyPlaying: null,
-  audioElements: {}
+  audioElements: {},
+  globalUpdating: false
 };
 
 async function initJour1Page() {
@@ -380,7 +395,7 @@ async function initJour1Page() {
       row.className =
         'audio-row p-5 md:p-6 flex items-center justify-between group';
       row.innerHTML = `
-      <div class="flex items-center flex-1 min-w-0 mr-4 cursor-pointer" onclick="jour1TogglePlay(${track.id})">
+      <div class="flex items-center flex-1 min-w-0 mr-4 cursor-pointer">
           <div class="number-badge w-14 h-14 rounded-xl flex items-center justify-center mr-4 flex-shrink-0">
               <span class="text-xl font-bold text-amber-400">${String(
                 track.id
@@ -525,6 +540,7 @@ function jour1TogglePlay(trackId) {
     row.classList.remove('playing');
     btn.innerHTML = '<i data-lucide="play" class="w-5 h-5 ml-0.5"></i>';
     jour1HideMobilePlayer();
+    jour1HideGlobalPlayer();
   } else {
     audio.play().catch((e) => {
       console.log('Lecture audio :', e);
@@ -535,6 +551,7 @@ function jour1TogglePlay(trackId) {
 
     const titleEl = row.querySelector('h4');
     jour1ShowMobilePlayer(titleEl ? titleEl.textContent : 'Lecture en cours...');
+    jour1ShowGlobalPlayer(trackId, audio, titleEl ? titleEl.textContent : '');
   }
 
   if (window.lucide) {
@@ -548,18 +565,99 @@ function jour1StopAllAudio() {
   const audio = jour1PageState.audioElements[currentId];
   const row = document.getElementById(`track-${currentId}`);
   const btn = document.getElementById(`play-btn-${currentId}`);
-  const icon = btn ? btn.querySelector('i') : null;
 
-  if (audio) audio.pause();
+  if (audio) {
+    audio.pause();
+    audio.currentTime = 0; // ← remet à zéro
+  }
   if (row) row.classList.remove('playing');
-  if (icon) icon.setAttribute('data-lucide', 'play');
+  if (btn) btn.innerHTML = '<i data-lucide="play" class="w-5 h-5 ml-0.5"></i>'; // ← fix bouton
 
   jour1PageState.currentlyPlaying = null;
   jour1HideMobilePlayer();
+  jour1HideGlobalPlayer();
 
-  if (window.lucide) {
-    window.lucide.createIcons();
+  if (window.lucide) window.lucide.createIcons();
+}
+
+function jour1ShowGlobalPlayer(trackId, audio, title) {
+  const container = document.getElementById('globalPlayer');
+  const titleEl = document.getElementById('globalTitle');
+  const playPauseBtn = document.getElementById('globalPlayPause');
+  const stopBtn = document.getElementById('globalStop');
+  const seek = document.getElementById('globalSeek');
+  const currentTimeEl = document.getElementById('globalCurrentTime');
+  const durationEl = document.getElementById('globalDuration');
+
+  if (!container || !titleEl || !playPauseBtn || !stopBtn || !seek || !currentTimeEl || !durationEl) {
+    return;
   }
+
+  container.classList.remove('hidden');
+  titleEl.textContent = title || `Piste ${trackId}`;
+
+  const formatTime = (sec) => {
+    if (!isFinite(sec)) return '0:00';
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60)
+      .toString()
+      .padStart(2, '0');
+    return `${m}:${s}`;
+  };
+
+  const updateDuration = () => {
+    if (!isFinite(audio.duration)) return;
+    seek.max = Math.floor(audio.duration).toString();
+    durationEl.textContent = formatTime(audio.duration);
+  };
+
+  // Initialise les valeurs courantes
+  currentTimeEl.textContent = formatTime(audio.currentTime || 0);
+  durationEl.textContent = audio.duration ? formatTime(audio.duration) : '0:00';
+  seek.value = Math.floor(audio.currentTime || 0).toString();
+
+  // Assurer la mise à jour quand les métadonnées arrivent
+  const onLoadedMetadata = () => updateDuration();
+  audio.addEventListener('loadedmetadata', onLoadedMetadata, { once: true });
+
+  // Mise à jour continue de la barre quand on joue
+  const onTimeUpdate = () => {
+    if (jour1PageState.globalUpdating) return;
+    seek.value = Math.floor(audio.currentTime || 0).toString();
+    currentTimeEl.textContent = formatTime(audio.currentTime || 0);
+  };
+  audio.addEventListener('timeupdate', onTimeUpdate);
+
+  // Contrôle par la barre de progression
+  seek.oninput = (e) => {
+    jour1PageState.globalUpdating = true;
+    const val = Number(e.target.value || 0);
+    audio.currentTime = val;
+    currentTimeEl.textContent = formatTime(val);
+    jour1PageState.globalUpdating = false;
+  };
+
+  // Play / Pause depuis le contrôleur global
+  playPauseBtn.onclick = () => {
+    if (audio.paused) {
+      audio.play().catch((err) => console.log('Lecture globale :', err));
+      playPauseBtn.innerHTML = '<i data-lucide="pause" class="w-4 h-4"></i>';
+    } else {
+      audio.pause();
+      playPauseBtn.innerHTML = '<i data-lucide="play" class="w-4 h-4"></i>';
+    }
+  };
+
+  // Stop: arrêter et masquer le contrôleur
+  stopBtn.onclick = () => {
+    jour1StopAllAudio();
+  };
+}
+
+function jour1HideGlobalPlayer() {
+  const container = document.getElementById('globalPlayer');
+  if (!container) return;
+  container.classList.add('hidden');
 }
 
 function jour1DownloadTrack(trackId, title) {
