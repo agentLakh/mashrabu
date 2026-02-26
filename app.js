@@ -443,6 +443,19 @@ async function initJour1Page() {
     }
   }
 
+  const arabicTitleEl = document.getElementById('dayArabicKourel');
+  if (arabicTitleEl) {
+    if (dayData && dayData.titre_ar) {
+      // Titre arabe fourni dans le JSON
+      arabicTitleEl.textContent = dayData.titre_ar;
+    } else if (dayNumber === 1) {
+      // Valeur par défaut pour le jour 1 si rien n'est défini
+      arabicTitleEl.textContent = 'الكورال مشرب صافي';
+    } else {
+      // Sinon on garde simplement le texte existant dans le HTML
+    }
+  }
+
   const dateNumberEl = document.getElementById('dayDateNumber');
   const dateMonthEl = document.getElementById('dayDateMonth');
   if (dateNumberEl && dateMonthEl) {
