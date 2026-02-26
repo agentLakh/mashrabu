@@ -3,6 +3,7 @@
     {
       "jour": 1,
       "titre": "Kourel Mashrabuç Çâfî",
+      "titre_ar": "الكورال مشرب صافي",
       "sons": [
         {
           "id": 1,
@@ -53,6 +54,7 @@
     {
       "jour": 2,
       "titre": "Kourel Nurud Darayni Touba",
+      "titre_ar": "الكورال نور الدارين طوبى",
       "sons": [
         {
           "id": 1,
@@ -115,6 +117,7 @@
     {
       "jour": 3,
       "titre": "Kourel Mafatihul Bichri Touba",
+      "titre_ar": "الكورال مفاتح البشرى طوبى",
       "sons": [
         {
           "id": 1,
@@ -156,6 +159,7 @@
     {
       "jour": 4,
       "titre": "Kourel Nurud Darayni Parcelles",
+      "titre_ar": "الكورال نور الدارين بارسيل",
       "sons": [
         {
           "id": 1,
@@ -190,6 +194,7 @@
     {
       "jour": 5,
       "titre": "Kourel Serigne Mahib Gueye",
+      "titre_ar": "الكورال سيرين محيب غي",
       "sons": [
         {
           "id": 1,
@@ -239,6 +244,7 @@
     {
       "jour": 6,
       "titre": "Kourel Nurud Darayni Thies",
+      "titre_ar": "الكورال نور الدارين تييس",
       "sons": [
         {
           "id": 1,
@@ -303,6 +309,7 @@
     {
       "jour": 7,
       "titre": "Kourel Nurud Darayni Keur Massar",
+      "titre_ar": "الكورال نور الدارين كير مسار",
       "sons": [
         {
           "id": 1,
