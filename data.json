@@ -6,7 +6,7 @@
       "sons": [
         {
           "id": 1,
-          "nom": "Son 1 - Yakhyra Dayfi",
+          "nom": "Son 1 - Yakhayra Dayfi",
           "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772050076/Yakhyra_dayfi_vch3ge.mp3",
           "duree": "5:18",
           "type": "Kourel"
@@ -51,6 +51,54 @@
           "id": 1,
           "nom": "Son 1 - Khassida Ramadan",
           "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772056451/J02_KHASSIDA_RAMADAN_HT_KUREL_NURUD_DARAYNI_HT_TOUBA_zu4ofn.mp3",
+          "duree": "4:30",
+          "type": "Kourel"
+        },
+
+        {
+          "id": 2,
+          "nom": "Son 2 - Lamyabdou",
+          "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772063054/J02_LAMYABDOU_S_MBAYE_DIOP_KUREL_NURUD_DARAYNI_HT_TOUBA_ibtodn.mp3",
+          "duree": "4:30",
+          "type": "Kourel"
+        },
+
+        {
+          "id": 3,
+          "nom": "Son 3 - Matlabu Fawzeyni",
+          "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772063177/J02_MATLABU_FAWZAYNI_S_TAFSIR_DIOP_KUREL_NURUD_DARAYNI_HT_TOUBA_imdn9d.mp3",
+          "duree": "4:30",
+          "type": "Kourel"
+        },
+
+        {
+          "id": 4,
+          "nom": "Son 4 - Madalmuna",
+          "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772063069/J02_MADALMUNA_S_CHEIKH_LO_KUREL_NURUD_DARAYNI_HT_TOUBA_l8xysq.mp3",
+          "duree": "4:30",
+          "type": "Kourel"
+        },
+
+        {
+          "id": 5,
+          "nom": "Son 5 - Yakhayra Dayfi",
+          "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772063069/J02_YAKHAYRA_S_MODOU_DEME_KUREL_NURUD_DARAYNI_HT_TOUBA_qoolli.mp3",
+          "duree": "4:30",
+          "type": "Kourel"
+        },
+
+        {
+          "id": 6,
+          "nom": "Son 6 - Madahtu",
+          "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772063057/J02_MADADTU_WKSM_KUREL_NURUD_DARAYNI_HT_TOUBA_wa0rvm.mp3",
+          "duree": "4:30",
+          "type": "Kourel"
+        }, 
+
+        {
+          "id": 7,
+          "nom": "Son 7 - Farij",
+          "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772063055/J02_FARIJ_HT_KUREL_NURUD_DARAYNI_HT_TOUBA_rlgl6r.mp3",
           "duree": "4:30",
           "type": "Kourel"
         }
