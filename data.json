@@ -40,6 +40,13 @@
           "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772055414/Hada_iqul_fada%CC%82_ili_kurel_Mashrabuc%CC%A7_C%CC%A7a%CC%82fi%CC%82_Hizbut-Tarqiyyah_1e_Jour_Ramadan_2026_1447h._R9I-ul6-0vw_frajvb.mp3",
           "duree": "35:58",
           "type": "Kourel"
+        },
+        {
+          "id": 6,
+          "nom": "Son 6 - Farij",
+          "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772068142/J01_FARIJ_HT_KUREL_MACHRABUS_CHAFI_HT_zdx7o4.mp3",
+          "duree": "1:58",
+          "type": "Kourel"
         }
       ]
     },
@@ -299,8 +306,43 @@
       "sons": [
         {
           "id": 1,
-          "nom": "Son 1 - Lamyabdou",
-          "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772063956/J05_LAMYABDU_S_TAFSIR_DIOP_KUREL_SERIGNE_MAHIB_GUEYE_HT_aqx1ca.mp3",
+          "nom": "Son 1 - Lamyabdou & Chahrou Ramadan",
+          "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772067363/J07_LAMYABDU_CHAHRU_RAMADAN_S_MSY_KUREL_NURUD_DARAYNI_HT_KEUR_MASSAR_z1wqum.mp3",
+          "duree": "4:30",
+          "type": "Kourel"
+        },
+        {
+          "id": 2,
+          "nom": "Son 2 - Bushralana",
+          "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772067506/J07_BUSHRALANA_WKSM_KUREL_NURUD_DARAYNI_HT_KEUR_MASSAR_inxvhd.mp3",
+          "duree": "4:30",
+          "type": "Kourel"
+        },
+        {
+          "id": 3,
+          "nom": "Son 3 - Liyankhada Rafahna Madhtun Salatun",
+          "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772067378/J07_LIYANKHADA_RAFAHNA_MADAHTUN_SALATUN_S_MAHIB_KUREL_NURUD_DARAYNI_mppug2.mp3",
+          "duree": "4:30",
+          "type": "Kourel"
+        },
+        {
+          "id": 4,
+          "nom": "Son 4 - Wadiahtulil Lahi Hamdan",
+          "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772067376/J07_WADIAHTU_LAHI_HAMDAN_S_CISSE_KUREL_NURUD_DARAYNI_HT_KEUR_MASSAR_qlupce.mp3",
+          "duree": "4:30",
+          "type": "Kourel"
+        },
+        {
+          "id": 5,
+          "nom": "Son 5 - Midadi",
+          "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772067922/J07_MIDADI_WKSM_KUREL_NURUD_DARAYNI_HT_KEUR_MASSAR_pjvmiy.mp3",
+          "duree": "4:30",
+          "type": "Kourel"
+        },
+        {
+          "id": 6,
+          "nom": "Son 5 - Farij",
+          "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772067341/J07_FARIJ_HT_KUREL_NURUD_DARAYNI_HT_KEUR_MASSAR_xmfswj.mp3",
           "duree": "4:30",
           "type": "Kourel"
         }
