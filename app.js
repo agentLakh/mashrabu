@@ -416,6 +416,52 @@ async function initJour1Page() {
     trackCount.textContent = `${tracks.length} piste${tracks.length > 1 ? 's' : ''}`;
   }
 
+  // Mise à jour de l'en-tête (jour, kourel, date) pour jour1.html
+  const totalDays = 30;
+  const badgeEl = document.getElementById('dayBadge');
+  if (badgeEl) {
+    badgeEl.textContent = `Jour ${dayNumber} sur ${totalDays}`;
+  }
+
+  const titleHeaderEl = document.getElementById('dayKourelTitle');
+  if (titleHeaderEl) {
+    if (dayData && dayData.titre) {
+      titleHeaderEl.textContent = dayData.titre;
+    } else {
+      titleHeaderEl.textContent = `Kourel jour ${dayNumber}`;
+    }
+  }
+
+  const dateNumberEl = document.getElementById('dayDateNumber');
+  const dateMonthEl = document.getElementById('dayDateMonth');
+  if (dateNumberEl && dateMonthEl) {
+    // Jour 1 = 19 février 2026, puis on ajoute (jour - 1) jours
+    const baseDate = new Date(2026, 1, 19); // mois 1 = février
+    const currentDate = new Date(
+      baseDate.getTime() + (dayNumber - 1) * 24 * 60 * 60 * 1000
+    );
+
+    const dayOfMonth = currentDate.getDate();
+    const monthsFr = [
+      'Janvier',
+      'Fevrier',
+      'Mars',
+      'Avril',
+      'Mai',
+      'Juin',
+      'Juillet',
+      'Août',
+      'Septembre',
+      'Octobre',
+      'Novembre',
+      'Decembre'
+    ];
+    const monthName = monthsFr[currentDate.getMonth()];
+
+    dateNumberEl.textContent = dayOfMonth.toString().padStart(2, '0');
+    dateMonthEl.textContent = monthName;
+  }
+
   if (window.lucide) {
     window.lucide.createIcons();
   }
