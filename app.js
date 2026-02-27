@@ -41,7 +41,7 @@ async function initIndexPage() {
     'Kourel Nurud Darayni Keur Massar',
     'Kourel Serigne Saliou Mbacke',
     'Kourel Nurud Darayni Dakar',
-    'Kourel ',
+    'Kourel Serigne Massamba Mbacke',
     'Kourel ',
     'Kourel ',
     'Kourel ',

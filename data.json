@@ -358,7 +358,7 @@
     {
       "jour": 8,
       "titre": "Kourel Serigne Saliou Mbacke",
-      "titre_ar": "الكورال نور الدارين بارسيل",
+      "titre_ar": "كورال الشيخ صالح مبكي",
       "sons": [
         {
           "id": 1,
@@ -414,6 +414,41 @@
           "nom": "Son 8 - Farij",
           "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772135376/J08_FARIJ_HT_KUREL_SERIGNE_SALIOU_MBACKE_HT_ubloug.mp3",
           "duree": "2:12",
+          "type": "Kourel"
+        }
+      ]
+    },
+    {
+      "jour": 9,
+      "titre": "Kourel Nurud Darayni Dakar",
+      "titre_ar": "كورال نور الدارين داكار",
+      "sons": [
+        {
+          "id": 1,
+          "nom": "Son 1 - Lamyabdou",
+          "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772221673/J09_LAMYABDU_S_M_SY_KUREL_NURUD_DARAYNI_HT_DAKAR_txwpiw.mp3",
+          "duree": "2:46",
+          "type": "Kourel"
+        },
+        {
+          "id": 2,
+          "nom": "Son 2 - Bidayatoul Khidma",
+          "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772221739/J09_BIDAYATUL_KHIDMA_S_TAFSIR_DIOP_KUREL_NURUD_DARAYNI_HT_DAKAR_bzkzsd.mp3",
+          "duree": "48:24",
+          "type": "Kourel"
+        },
+        {
+          "id": 3,
+          "nom": "Son 3 - Rabikarimin",
+          "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772221682/J09_RABIKARIMIN_S_CHEIKH_LO_KUREL_NURUD_DARAYNI_HT_DAKAR_g08c1n.mp3",
+          "duree": "6:36",
+          "type": "Kourel"
+        },
+        {
+          "id": 4,
+          "nom": "Son 4 - Farij",
+          "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772221673/J09_FARIJ_HT_KUREL_NURUD_DARAYNI_HT_DAKAR_b0kdee.mp3",
+          "duree": "2:23",
           "type": "Kourel"
         }
       ]
