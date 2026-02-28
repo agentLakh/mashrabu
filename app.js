@@ -30,7 +30,6 @@ async function loadCatalogue() {
 // =========================
 
 async function initIndexPage() {
-  // Configuration des jours avec titres spécifiques
   const dayTitles = [
     'Kourel Mashrabuç Çâfî',
     'Kourel Nurud Darayni Touba',
@@ -42,26 +41,10 @@ async function initIndexPage() {
     'Kourel Serigne Saliou Mbacke',
     'Kourel Nurud Darayni Dakar',
     'Kourel Serigne Massamba Mbacke',
-    'Kourel ',
-    'Kourel ',
-    'Kourel ',
-    'Kourel ',
-    "Kourel ",
-    'Kourel ',
-    'Kourel ',
-    'Kourel ',
-    'Kourel ',
-    'Kourel ',
-    "Kourel '",
-    'Kourel ',
-    'Kourel ',
-    'Kourel ',
-    'Kourel ',
-    'Kourel ',
-    'Kourel ',
-    'Kourel ',
-    'Kourel ',
-    'Kourel '
+    'Kourel ', 'Kourel ', 'Kourel ', 'Kourel ', 'Kourel ',
+    'Kourel ', 'Kourel ', 'Kourel ', 'Kourel ', 'Kourel ',
+    "Kourel '", 'Kourel ', 'Kourel ', 'Kourel ', 'Kourel ',
+    'Kourel ', 'Kourel ', 'Kourel ', 'Kourel ', 'Kourel '
   ];
 
   const grid = document.getElementById('daysGrid');
@@ -72,17 +55,12 @@ async function initIndexPage() {
 
   for (let i = 1; i <= 30; i++) {
     const dayData = jours.find((j) => j.jour === i);
-    const trackCount =
-      dayData && Array.isArray(dayData.sons) ? dayData.sons.length : 0;
-    const trackLabel =
-      trackCount === 0
-        ? '0 piste'
-        : `${trackCount} piste${trackCount > 1 ? 's' : ''}`;
+    const trackCount = dayData && Array.isArray(dayData.sons) ? dayData.sons.length : 0;
+    const trackLabel = trackCount === 0 ? '0 piste' : `${trackCount} piste${trackCount > 1 ? 's' : ''}`;
 
     const card = document.createElement('a');
     card.href = `jour1.html?day=${i}`;
-    card.className =
-      'day-card group block rounded-2xl p-6 cursor-pointer relative overflow-hidden';
+    card.className = 'day-card group block rounded-2xl p-6 cursor-pointer relative overflow-hidden';
 
     card.innerHTML = `
       <div class="absolute inset-0 bg-gradient-to-br from-amber-500/0 to-emerald-500/0 group-hover:from-amber-500/10 group-hover:to-emerald-500/10 transition-all duration-300"></div>
@@ -105,13 +83,11 @@ async function initIndexPage() {
     grid.appendChild(card);
   }
 
-  if (window.lucide) {
-    window.lucide.createIcons();
-  }
+  if (window.lucide) window.lucide.createIcons();
 }
 
 // =========================
-// Pages "jour" (liste audio)
+// Utilitaire : numéro de jour
 // =========================
 
 function getDayNumberFromLocation() {
@@ -126,27 +102,25 @@ function getDayNumberFromLocation() {
   return 1;
 }
 
-// -------- jour.html (version claire) --------
+// =========================
+// jour.html (version claire)
+// =========================
 
-const jourPageState = {
-  currentlyPlaying: null
-};
+const jourPageState = { currentlyPlaying: null };
 
 async function initJourPage() {
   const dayNumber = getDayNumberFromLocation();
   const catalogue = await loadCatalogue();
-  const dayData =
-    (catalogue.jours || []).find((j) => j.jour === dayNumber) || null;
+  const dayData = (catalogue.jours || []).find((j) => j.jour === dayNumber) || null;
 
-  const tracks =
-    dayData && Array.isArray(dayData.sons) && dayData.sons.length
-      ? dayData.sons.map((son, index) => ({
-          id: son.id != null ? son.id : index + 1,
-          title: son.nom || `Son ${index + 1}`,
-          duration: son.duree || '--:--',
-          url: son.url
-        }))
-      : [];
+  const tracks = dayData && Array.isArray(dayData.sons) && dayData.sons.length
+    ? dayData.sons.map((son, index) => ({
+        id: son.id != null ? son.id : index + 1,
+        title: son.nom || `Son ${index + 1}`,
+        duration: son.duree || '--:--',
+        url: son.url
+      }))
+    : [];
 
   const audioList = document.getElementById('audioList');
   const trackCount = document.getElementById('trackCount');
@@ -155,20 +129,16 @@ async function initJourPage() {
   audioList.innerHTML = '';
 
   if (tracks.length === 0) {
-    audioList.innerHTML =
-      '<div class="p-6 text-center text-gray-500">Aucune piste audio disponible pour ce jour.</div>';
+    audioList.innerHTML = '<div class="p-6 text-center text-gray-500">Aucune piste audio disponible pour ce jour.</div>';
   } else {
     tracks.forEach((track) => {
       const row = document.createElement('div');
       row.id = `track-${track.id}`;
-      row.className =
-        'audio-row p-4 md:p-6 flex items-center justify-between group cursor-pointer';
+      row.className = 'audio-row p-4 md:p-6 flex items-center justify-between group cursor-pointer';
       row.innerHTML = `
       <div class="flex items-center flex-1 min-w-0 mr-4" onclick="jourPageTogglePlay(${track.id})">
           <div class="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center mr-4 flex-shrink-0 group-hover:bg-emerald-100 transition-colors">
-              <span class="text-lg font-bold text-emerald-700">${String(
-                track.id
-              ).padStart(2, '0')}</span>
+              <span class="text-lg font-bold text-emerald-700">${String(track.id).padStart(2, '0')}</span>
           </div>
           <div class="min-w-0">
               <h4 class="font-semibold text-gray-900 truncate group-hover:text-emerald-700 transition-colors">${track.title}</h4>
@@ -189,64 +159,53 @@ async function initJourPage() {
                   title="Lecture">
               <i data-lucide="play" class="w-5 h-5 ml-0.5"></i>
           </button>
-          <button id="download-btn-${track.id}"
-                  onclick="event.stopPropagation(); jourPageDownloadTrack(${track.id}, '${(
-                    track.title || ''
-                  ).replace(/'/g, "\\'")}')"
-                  class="btn-icon w-12 h-12 rounded-full bg-amber-50 hover:bg-amber-100 flex items-center justify-center text-amber-700 shadow-sm"
-                  title="Télécharger">
+          <a href="${track.url}"
+             target="_blank"
+             onclick="event.stopPropagation();"
+             class="btn-icon w-12 h-12 rounded-full bg-amber-50 hover:bg-amber-100 flex items-center justify-center text-amber-700 shadow-sm"
+             title="Télécharger">
               <i data-lucide="download" class="w-5 h-5"></i>
-          </button>
+          </a>
       </div>
     `;
       audioList.appendChild(row);
 
       const playBtn = document.getElementById(`play-btn-${track.id}`);
-if (playBtn) {
-  playBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    jour1TogglePlay(track.id);
-  });
-}
+      if (playBtn) {
+        playBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          jourPageTogglePlay(track.id);
+        });
+      }
 
-const rowEl = document.getElementById(`track-${track.id}`);
-if (rowEl) {
-  rowEl.querySelector('.flex-1')?.addEventListener('click', () => {
-    jour1TogglePlay(track.id);
-  });
-}
+      const rowEl = document.getElementById(`track-${track.id}`);
+      if (rowEl) {
+        rowEl.querySelector('.flex-1')?.addEventListener('click', () => {
+          jourPageTogglePlay(track.id);
+        });
+      }
 
       const audio = document.getElementById(`audio-${track.id}`);
       if (audio) {
         audio.addEventListener('ended', () => {
-          if (jourPageState.currentlyPlaying === track.id) {
-            jourPageStopAllAudio();
-          }
+          if (jourPageState.currentlyPlaying === track.id) jourPageStopAllAudio();
         });
       }
     });
   }
 
-  if (trackCount) {
-    trackCount.textContent = `${tracks.length} piste${tracks.length > 1 ? 's' : ''}`;
-  }
+  if (trackCount) trackCount.textContent = `${tracks.length} piste${tracks.length > 1 ? 's' : ''}`;
 
   if (dayData) {
     const dayTitle = document.getElementById('dayTitle');
     const daySubtitle = document.getElementById('daySubtitle');
     const dayNumberEl = document.getElementById('dayNumber');
     if (dayTitle) dayTitle.textContent = `Jour ${dayData.jour}`;
-    if (daySubtitle && dayData.titre) {
-      daySubtitle.textContent = dayData.titre;
-    }
-    if (dayNumberEl) {
-      dayNumberEl.textContent = dayData.jour.toString().padStart(2, '0');
-    }
+    if (daySubtitle && dayData.titre) daySubtitle.textContent = dayData.titre;
+    if (dayNumberEl) dayNumberEl.textContent = dayData.jour.toString().padStart(2, '0');
   }
 
-  if (window.lucide) {
-    window.lucide.createIcons();
-  }
+  if (window.lucide) window.lucide.createIcons();
 }
 
 function jourPageTogglePlay(trackId) {
@@ -268,20 +227,15 @@ function jourPageTogglePlay(trackId) {
     icon.setAttribute('data-lucide', 'play');
     jourPageHideMobilePlayer();
   } else {
-    audio.play().catch((e) => {
-      console.log('Audio play error:', e);
-    });
+    audio.play().catch((e) => console.log('Audio play error:', e));
     jourPageState.currentlyPlaying = trackId;
     row.classList.add('playing');
     icon.setAttribute('data-lucide', 'pause');
-
     const titleEl = row.querySelector('h4');
     jourPageShowMobilePlayer(titleEl ? titleEl.textContent : 'Lecture en cours...');
   }
 
-  if (window.lucide) {
-    window.lucide.createIcons();
-  }
+  if (window.lucide) window.lucide.createIcons();
 }
 
 function jourPageStopAllAudio() {
@@ -300,44 +254,7 @@ function jourPageStopAllAudio() {
   jourPageState.currentlyPlaying = null;
   jourPageHideMobilePlayer();
 
-  if (window.lucide) {
-    window.lucide.createIcons();
-  }
-}
-
-function jourPageDownloadTrack(trackId, title) {
-  const audio = document.getElementById(`audio-${trackId}`);
-  if (!audio) return;
-
-  const source = audio.querySelector ? audio.querySelector('source') : null;
-  const url = (source && source.src) || audio.src;
-  if (!url) return;
-
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `Jour${getDayNumberFromLocation()}_Son${trackId}_${title.replace(
-    /\s+/g,
-    '_'
-  )}.mp3`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-
-  const btn = document.getElementById(`download-btn-${trackId}`);
-  if (!btn) return;
-
-  const originalContent = btn.innerHTML;
-  btn.innerHTML =
-    '<i data-lucide="check" class="w-5 h-5 text-emerald-600"></i>';
-  if (window.lucide) {
-    window.lucide.createIcons();
-  }
-  setTimeout(() => {
-    btn.innerHTML = originalContent;
-    if (window.lucide) {
-      window.lucide.createIcons();
-    }
-  }, 2000);
+  if (window.lucide) window.lucide.createIcons();
 }
 
 function jourPageShowMobilePlayer(title) {
@@ -354,7 +271,9 @@ function jourPageHideMobilePlayer() {
   bar.classList.add('translate-y-full');
 }
 
-// -------- jour1.html (version sombre) --------
+// =========================
+// jour1.html (version sombre)
+// =========================
 
 const jour1PageState = {
   currentlyPlaying: null,
@@ -365,19 +284,17 @@ const jour1PageState = {
 async function initJour1Page() {
   const dayNumber = getDayNumberFromLocation();
   const catalogue = await loadCatalogue();
-  const dayData =
-    (catalogue.jours || []).find((j) => j.jour === dayNumber) || null;
+  const dayData = (catalogue.jours || []).find((j) => j.jour === dayNumber) || null;
 
-  const tracks =
-    dayData && Array.isArray(dayData.sons) && dayData.sons.length
-      ? dayData.sons.map((son, index) => ({
-          id: son.id != null ? son.id : index + 1,
-          title: son.nom || `Son ${index + 1}`,
-          duration: son.duree || '--:--',
-          type: son.type || 'Audio',
-          url: son.url
-        }))
-      : [];
+  const tracks = dayData && Array.isArray(dayData.sons) && dayData.sons.length
+    ? dayData.sons.map((son, index) => ({
+        id: son.id != null ? son.id : index + 1,
+        title: son.nom || `Son ${index + 1}`,
+        duration: son.duree || '--:--',
+        type: son.type || 'Audio',
+        url: son.url
+      }))
+    : [];
 
   const audioList = document.getElementById('audioList');
   const trackCount = document.getElementById('trackCount');
@@ -386,20 +303,16 @@ async function initJour1Page() {
   audioList.innerHTML = '';
 
   if (tracks.length === 0) {
-    audioList.innerHTML =
-      '<div class="p-6 text-center text-emerald-300/80">Aucune piste audio disponible pour ce jour.</div>';
+    audioList.innerHTML = '<div class="p-6 text-center text-emerald-300/80">Aucune piste audio disponible pour ce jour.</div>';
   } else {
     tracks.forEach((track) => {
       const row = document.createElement('div');
       row.id = `track-${track.id}`;
-      row.className =
-        'audio-row p-5 md:p-6 flex items-center justify-between group';
+      row.className = 'audio-row p-5 md:p-6 flex items-center justify-between group';
       row.innerHTML = `
       <div class="flex items-center flex-1 min-w-0 mr-4 cursor-pointer">
           <div class="number-badge w-14 h-14 rounded-xl flex items-center justify-center mr-4 flex-shrink-0">
-              <span class="text-xl font-bold text-amber-400">${String(
-                track.id
-              ).padStart(2, '0')}</span>
+              <span class="text-xl font-bold text-amber-400">${String(track.id).padStart(2, '0')}</span>
           </div>
           <div class="min-w-0 flex-1">
               <h4 class="font-semibold text-white text-lg truncate group-hover:text-amber-400 transition-colors">${track.title}</h4>
@@ -422,101 +335,63 @@ async function initJour1Page() {
                   title="Écouter">
               <i data-lucide="play" class="w-5 h-5 ml-0.5"></i>
           </button>
-          <button id="download-btn-${track.id}"
-                  onclick="event.stopPropagation(); jour1DownloadTrack(${track.id}, '${(
-                    track.title || ''
-                  ).replace(/'/g, "\\'")}')"
-                  class="btn-icon btn-download w-12 h-12 rounded-xl flex items-center justify-center text-amber-400"
-                  title="Télécharger">
+          <a id="download-btn-${track.id}"
+             href="${track.url}"
+             target="_blank"
+             onclick="event.stopPropagation();"
+             class="btn-icon btn-download w-12 h-12 rounded-xl flex items-center justify-center text-amber-400"
+             title="Télécharger">
               <i data-lucide="download" class="w-5 h-5"></i>
-          </button>
+          </a>
       </div>
     `;
       audioList.appendChild(row);
-
       jour1InitAudioPlayer(track);
     });
   }
 
-  if (trackCount) {
-    trackCount.textContent = `${tracks.length} piste${tracks.length > 1 ? 's' : ''}`;
-  }
+  if (trackCount) trackCount.textContent = `${tracks.length} piste${tracks.length > 1 ? 's' : ''}`;
 
-  // Mise à jour de l'en-tête (jour, kourel, date) pour jour1.html
   const totalDays = 30;
   const badgeEl = document.getElementById('dayBadge');
-  if (badgeEl) {
-    badgeEl.textContent = `Jour ${dayNumber} sur ${totalDays}`;
-  }
+  if (badgeEl) badgeEl.textContent = `Jour ${dayNumber} sur ${totalDays}`;
 
   const titleHeaderEl = document.getElementById('dayKourelTitle');
   if (titleHeaderEl) {
-    if (dayData && dayData.titre) {
-      titleHeaderEl.textContent = dayData.titre;
-    } else {
-      titleHeaderEl.textContent = `Kourel jour ${dayNumber}`;
-    }
+    titleHeaderEl.textContent = dayData && dayData.titre ? dayData.titre : `Kourel jour ${dayNumber}`;
   }
 
   const arabicTitleEl = document.getElementById('dayArabicKourel');
   if (arabicTitleEl) {
     if (dayData && dayData.titre_ar) {
-      // Titre arabe fourni dans le JSON
       arabicTitleEl.textContent = dayData.titre_ar;
     } else if (dayNumber === 1) {
-      // Valeur par défaut pour le jour 1 si rien n'est défini
       arabicTitleEl.textContent = 'الكورال مشرب صافي';
-    } else {
-      // Sinon on garde simplement le texte existant dans le HTML
     }
   }
 
   const dateNumberEl = document.getElementById('dayDateNumber');
   const dateMonthEl = document.getElementById('dayDateMonth');
   if (dateNumberEl && dateMonthEl) {
-    // Jour 1 = 19 février 2026, puis on ajoute (jour - 1) jours
-    const baseDate = new Date(2026, 1, 19); // mois 1 = février
-    const currentDate = new Date(
-      baseDate.getTime() + (dayNumber - 1) * 24 * 60 * 60 * 1000
-    );
-
-    const dayOfMonth = currentDate.getDate();
-    const monthsFr = [
-      'Janvier',
-      'Fevrier',
-      'Mars',
-      'Avril',
-      'Mai',
-      'Juin',
-      'Juillet',
-      'Août',
-      'Septembre',
-      'Octobre',
-      'Novembre',
-      'Decembre'
-    ];
-    const monthName = monthsFr[currentDate.getMonth()];
-
-    dateNumberEl.textContent = dayOfMonth.toString().padStart(2, '0');
-    dateMonthEl.textContent = monthName;
+    const baseDate = new Date(2026, 1, 19);
+    const currentDate = new Date(baseDate.getTime() + (dayNumber - 1) * 24 * 60 * 60 * 1000);
+    const monthsFr = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Decembre'];
+    dateNumberEl.textContent = currentDate.getDate().toString().padStart(2, '0');
+    dateMonthEl.textContent = monthsFr[currentDate.getMonth()];
   }
 
-  if (window.lucide) {
-    window.lucide.createIcons();
-  }
+  if (window.lucide) window.lucide.createIcons();
 }
 
 function jour1InitAudioPlayer(track) {
   const audio = new Audio();
-  audio.crossOrigin = "anonymous";  // ← fix CORS Cloudinary
+  audio.crossOrigin = 'anonymous';
   audio.preload = 'none';
   audio.src = track.url;
   jour1PageState.audioElements[track.id] = audio;
 
   audio.addEventListener('ended', () => {
-    if (jour1PageState.currentlyPlaying === track.id) {
-      jour1StopAllAudio();
-    }
+    if (jour1PageState.currentlyPlaying === track.id) jour1StopAllAudio();
   });
 }
 
@@ -527,10 +402,7 @@ function jour1TogglePlay(trackId) {
 
   if (!audio || !row || !btn) return;
 
-  if (
-    jour1PageState.currentlyPlaying &&
-    jour1PageState.currentlyPlaying !== trackId
-  ) {
+  if (jour1PageState.currentlyPlaying && jour1PageState.currentlyPlaying !== trackId) {
     jour1StopAllAudio();
   }
 
@@ -542,22 +414,18 @@ function jour1TogglePlay(trackId) {
     jour1HideMobilePlayer();
     jour1HideGlobalPlayer();
   } else {
-    audio.play().catch((e) => {
-      console.log('Lecture audio :', e);
-    });
+    audio.play().catch((e) => console.log('Lecture audio :', e));
     jour1PageState.currentlyPlaying = trackId;
     row.classList.add('playing');
     btn.innerHTML = '<i data-lucide="pause" class="w-5 h-5"></i>';
-
     const titleEl = row.querySelector('h4');
     jour1ShowMobilePlayer(titleEl ? titleEl.textContent : 'Lecture en cours...');
     jour1ShowGlobalPlayer(trackId, audio, titleEl ? titleEl.textContent : '');
   }
 
-  if (window.lucide) {
-    window.lucide.createIcons();
-  }
+  if (window.lucide) window.lucide.createIcons();
 }
+
 function jour1StopAllAudio() {
   if (!jour1PageState.currentlyPlaying) return;
 
@@ -566,12 +434,9 @@ function jour1StopAllAudio() {
   const row = document.getElementById(`track-${currentId}`);
   const btn = document.getElementById(`play-btn-${currentId}`);
 
-  if (audio) {
-    audio.pause();
-    audio.currentTime = 0; // ← remet à zéro
-  }
+  if (audio) { audio.pause(); audio.currentTime = 0; }
   if (row) row.classList.remove('playing');
-  if (btn) btn.innerHTML = '<i data-lucide="play" class="w-5 h-5 ml-0.5"></i>'; // ← fix bouton
+  if (btn) btn.innerHTML = '<i data-lucide="play" class="w-5 h-5 ml-0.5"></i>';
 
   jour1PageState.currentlyPlaying = null;
   jour1HideMobilePlayer();
@@ -589,9 +454,7 @@ function jour1ShowGlobalPlayer(trackId, audio, title) {
   const currentTimeEl = document.getElementById('globalCurrentTime');
   const durationEl = document.getElementById('globalDuration');
 
-  if (!container || !titleEl || !playPauseBtn || !stopBtn || !seek || !currentTimeEl || !durationEl) {
-    return;
-  }
+  if (!container || !titleEl || !playPauseBtn || !stopBtn || !seek || !currentTimeEl || !durationEl) return;
 
   container.classList.remove('hidden');
   titleEl.textContent = title || `Piste ${trackId}`;
@@ -599,9 +462,7 @@ function jour1ShowGlobalPlayer(trackId, audio, title) {
   const formatTime = (sec) => {
     if (!isFinite(sec)) return '0:00';
     const m = Math.floor(sec / 60);
-    const s = Math.floor(sec % 60)
-      .toString()
-      .padStart(2, '0');
+    const s = Math.floor(sec % 60).toString().padStart(2, '0');
     return `${m}:${s}`;
   };
 
@@ -611,24 +472,18 @@ function jour1ShowGlobalPlayer(trackId, audio, title) {
     durationEl.textContent = formatTime(audio.duration);
   };
 
-  // Initialise les valeurs courantes
   currentTimeEl.textContent = formatTime(audio.currentTime || 0);
   durationEl.textContent = audio.duration ? formatTime(audio.duration) : '0:00';
   seek.value = Math.floor(audio.currentTime || 0).toString();
 
-  // Assurer la mise à jour quand les métadonnées arrivent
-  const onLoadedMetadata = () => updateDuration();
-  audio.addEventListener('loadedmetadata', onLoadedMetadata, { once: true });
+  audio.addEventListener('loadedmetadata', updateDuration, { once: true });
 
-  // Mise à jour continue de la barre quand on joue
-  const onTimeUpdate = () => {
+  audio.addEventListener('timeupdate', () => {
     if (jour1PageState.globalUpdating) return;
     seek.value = Math.floor(audio.currentTime || 0).toString();
     currentTimeEl.textContent = formatTime(audio.currentTime || 0);
-  };
-  audio.addEventListener('timeupdate', onTimeUpdate);
+  });
 
-  // Contrôle par la barre de progression
   seek.oninput = (e) => {
     jour1PageState.globalUpdating = true;
     const val = Number(e.target.value || 0);
@@ -637,62 +492,23 @@ function jour1ShowGlobalPlayer(trackId, audio, title) {
     jour1PageState.globalUpdating = false;
   };
 
-  // Play / Pause depuis le contrôleur global
   playPauseBtn.onclick = () => {
     if (audio.paused) {
-        audio.play().catch((err) => console.log('Lecture globale :', err));
-        playPauseBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
+      audio.play().catch((err) => console.log('Lecture globale :', err));
+      playPauseBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
     } else {
-        audio.pause();
-        playPauseBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>';
+      audio.pause();
+      playPauseBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>';
     }
-};
-
-  // Stop: arrêter et masquer le contrôleur
-  stopBtn.onclick = () => {
-    jour1StopAllAudio();
   };
+
+  stopBtn.onclick = () => jour1StopAllAudio();
 }
 
 function jour1HideGlobalPlayer() {
   const container = document.getElementById('globalPlayer');
   if (!container) return;
   container.classList.add('hidden');
-}
-
-function jour1DownloadTrack(trackId, title) {
-  const audio = jour1PageState.audioElements[trackId];
-  if (!audio || !audio.src) return;
-
-  const url = audio.src;
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `Jour${getDayNumberFromLocation()}_Son${trackId}_${title.replace(
-    /\s+/g,
-    '_'
-  )}.mp3`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-
-  const btn = document.getElementById(`download-btn-${trackId}`);
-  if (!btn) return;
-
-  const originalHTML = btn.innerHTML;
-  btn.innerHTML =
-    '<i data-lucide="check" class="w-5 h-5 text-emerald-400"></i>';
-  btn.classList.add('bg-emerald-500/30');
-  if (window.lucide) {
-    window.lucide.createIcons();
-  }
-
-  setTimeout(() => {
-    btn.innerHTML = originalHTML;
-    btn.classList.remove('bg-emerald-500/30');
-    if (window.lucide) {
-      window.lucide.createIcons();
-    }
-  }, 2000);
 }
 
 function jour1ShowMobilePlayer(title) {
@@ -708,4 +524,3 @@ function jour1HideMobilePlayer() {
   if (!bar) return;
   bar.classList.add('translate-y-full');
 }
-
