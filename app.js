@@ -1,4 +1,3 @@
-// Initialisation globale selon la page
 document.addEventListener('DOMContentLoaded', () => {
   const filename = window.location.pathname.split('/').pop() || 'index.html';
 
@@ -10,8 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initJour1Page();
   }
 });
-
-// Chargement du catalogue depuis data.json
 async function loadCatalogue() {
   try {
     const response = await fetch('data.json');
@@ -25,12 +22,7 @@ async function loadCatalogue() {
   }
 }
 
-// =========================
-// Page d'accueil (index)
-// =========================
-
 async function initIndexPage() {
-  // Configuration des jours avec titres spécifiques
   const dayTitles = [
     'Kourel Mashrabuç Çâfî',
     'Kourel Nurud Darayni Touba',
@@ -110,9 +102,6 @@ async function initIndexPage() {
   }
 }
 
-// =========================
-// Pages "jour" (liste audio)
-// =========================
 
 function getDayNumberFromLocation() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -125,8 +114,6 @@ function getDayNumberFromLocation() {
 
   return 1;
 }
-
-// -------- jour.html (version claire) --------
 
 const jourPageState = {
   currentlyPlaying: null
@@ -305,7 +292,7 @@ function jourPageStopAllAudio() {
   }
 }
 
-function jourPageDownloadTrack(trackId, title) {
+async function jourPageDownloadTrack(trackId, title) {
   const audio = document.getElementById(`audio-${trackId}`);
   if (!audio) return;
 
@@ -313,29 +300,49 @@ function jourPageDownloadTrack(trackId, title) {
   const url = (source && source.src) || audio.src;
   if (!url) return;
 
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `Jour${getDayNumberFromLocation()}_Son${trackId}_${title.replace(
-    /\s+/g,
-    '_'
-  )}.mp3`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-
   const btn = document.getElementById(`download-btn-${trackId}`);
-  if (!btn) return;
+  const originalContent = btn ? btn.innerHTML : '';
 
-  const originalContent = btn.innerHTML;
-  btn.innerHTML =
-    '<i data-lucide="check" class="w-5 h-5 text-emerald-600"></i>';
-  if (window.lucide) {
-    window.lucide.createIcons();
+  try {
+    // Changement visuel pour indiquer le début du téléchargement
+    if (btn) {
+      btn.innerHTML = '<i data-lucide="loader" class="w-5 h-5 animate-spin"></i>';
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    // Récupération du fichier en tant que Blob pour forcer le téléchargement
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const blobUrl = window.URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = `Jour${getDayNumberFromLocation()}_Son${trackId}_${title.replace(/\s+/g, '_')}.mp3`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(blobUrl);
+
+    // Succès
+    if (btn) {
+      btn.innerHTML = '<i data-lucide="check" class="w-5 h-5 text-emerald-600"></i>';
+      if (window.lucide) window.lucide.createIcons();
+    }
+  } catch (error) {
+    console.error('Erreur lors du téléchargement :', error);
+    // En cas d'échec (ex: CORS), on tente la méthode classique
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Jour${getDayNumberFromLocation()}_Son${trackId}_${title.replace(/\s+/g, '_')}.mp3`;
+    a.target = '_blank';
+    a.click();
   }
+
+  // Remise à zéro de l'icône après 2 secondes
   setTimeout(() => {
-    btn.innerHTML = originalContent;
-    if (window.lucide) {
-      window.lucide.createIcons();
+    if (btn) {
+      btn.innerHTML = originalContent;
+      if (window.lucide) window.lucide.createIcons();
     }
   }, 2000);
 }
@@ -354,7 +361,6 @@ function jourPageHideMobilePlayer() {
   bar.classList.add('translate-y-full');
 }
 
-// -------- jour1.html (version sombre) --------
 
 const jour1PageState = {
   currentlyPlaying: null,
@@ -442,7 +448,7 @@ async function initJour1Page() {
     trackCount.textContent = `${tracks.length} piste${tracks.length > 1 ? 's' : ''}`;
   }
 
-  // Mise à jour de l'en-tête (jour, kourel, date) pour jour1.html
+
   const totalDays = 30;
   const badgeEl = document.getElementById('dayBadge');
   if (badgeEl) {
@@ -461,21 +467,17 @@ async function initJour1Page() {
   const arabicTitleEl = document.getElementById('dayArabicKourel');
   if (arabicTitleEl) {
     if (dayData && dayData.titre_ar) {
-      // Titre arabe fourni dans le JSON
       arabicTitleEl.textContent = dayData.titre_ar;
-    } else if (dayNumber === 1) {
-      // Valeur par défaut pour le jour 1 si rien n'est défini
+    } else if (dayNumber === 1) {      
       arabicTitleEl.textContent = 'الكورال مشرب صافي';
     } else {
-      // Sinon on garde simplement le texte existant dans le HTML
     }
   }
 
   const dateNumberEl = document.getElementById('dayDateNumber');
   const dateMonthEl = document.getElementById('dayDateMonth');
   if (dateNumberEl && dateMonthEl) {
-    // Jour 1 = 19 février 2026, puis on ajoute (jour - 1) jours
-    const baseDate = new Date(2026, 1, 19); // mois 1 = février
+    const baseDate = new Date(2026, 1, 19);
     const currentDate = new Date(
       baseDate.getTime() + (dayNumber - 1) * 24 * 60 * 60 * 1000
     );
@@ -508,7 +510,7 @@ async function initJour1Page() {
 
 function jour1InitAudioPlayer(track) {
   const audio = new Audio();
-  audio.crossOrigin = "anonymous";  // ← fix CORS Cloudinary
+  audio.crossOrigin = "anonymous";  
   audio.preload = 'none';
   audio.src = track.url;
   jour1PageState.audioElements[track.id] = audio;
@@ -568,7 +570,7 @@ function jour1StopAllAudio() {
 
   if (audio) {
     audio.pause();
-    audio.currentTime = 0; // ← remet à zéro
+    audio.currentTime = 0; 
   }
   if (row) row.classList.remove('playing');
   if (btn) btn.innerHTML = '<i data-lucide="play" class="w-5 h-5 ml-0.5"></i>'; // ← fix bouton
@@ -611,16 +613,13 @@ function jour1ShowGlobalPlayer(trackId, audio, title) {
     durationEl.textContent = formatTime(audio.duration);
   };
 
-  // Initialise les valeurs courantes
   currentTimeEl.textContent = formatTime(audio.currentTime || 0);
   durationEl.textContent = audio.duration ? formatTime(audio.duration) : '0:00';
   seek.value = Math.floor(audio.currentTime || 0).toString();
 
-  // Assurer la mise à jour quand les métadonnées arrivent
   const onLoadedMetadata = () => updateDuration();
   audio.addEventListener('loadedmetadata', onLoadedMetadata, { once: true });
 
-  // Mise à jour continue de la barre quand on joue
   const onTimeUpdate = () => {
     if (jour1PageState.globalUpdating) return;
     seek.value = Math.floor(audio.currentTime || 0).toString();
@@ -628,7 +627,6 @@ function jour1ShowGlobalPlayer(trackId, audio, title) {
   };
   audio.addEventListener('timeupdate', onTimeUpdate);
 
-  // Contrôle par la barre de progression
   seek.oninput = (e) => {
     jour1PageState.globalUpdating = true;
     const val = Number(e.target.value || 0);
@@ -637,7 +635,6 @@ function jour1ShowGlobalPlayer(trackId, audio, title) {
     jour1PageState.globalUpdating = false;
   };
 
-  // Play / Pause depuis le contrôleur global
   playPauseBtn.onclick = () => {
     if (audio.paused) {
         audio.play().catch((err) => console.log('Lecture globale :', err));
@@ -648,7 +645,6 @@ function jour1ShowGlobalPlayer(trackId, audio, title) {
     }
 };
 
-  // Stop: arrêter et masquer le contrôleur
   stopBtn.onclick = () => {
     jour1StopAllAudio();
   };
@@ -660,37 +656,53 @@ function jour1HideGlobalPlayer() {
   container.classList.add('hidden');
 }
 
-function jour1DownloadTrack(trackId, title) {
+async function jour1DownloadTrack(trackId, title) {
   const audio = jour1PageState.audioElements[trackId];
   if (!audio || !audio.src) return;
 
   const url = audio.src;
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `Jour${getDayNumberFromLocation()}_Son${trackId}_${title.replace(
-    /\s+/g,
-    '_'
-  )}.mp3`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-
   const btn = document.getElementById(`download-btn-${trackId}`);
-  if (!btn) return;
+  const originalHTML = btn ? btn.innerHTML : '';
 
-  const originalHTML = btn.innerHTML;
-  btn.innerHTML =
-    '<i data-lucide="check" class="w-5 h-5 text-emerald-400"></i>';
-  btn.classList.add('bg-emerald-500/30');
-  if (window.lucide) {
-    window.lucide.createIcons();
+  try {
+    
+    if (btn) {
+      btn.innerHTML = '<i data-lucide="loader" class="w-5 h-5 animate-spin"></i>';
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const blobUrl = window.URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = `Jour${getDayNumberFromLocation()}_Son${trackId}_${title.replace(/\s+/g, '_')}.mp3`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(blobUrl);
+
+  
+    if (btn) {
+      btn.innerHTML = '<i data-lucide="check" class="w-5 h-5 text-emerald-400"></i>';
+      btn.classList.add('bg-emerald-500/30');
+      if (window.lucide) window.lucide.createIcons();
+    }
+  } catch (error) {
+    console.error('Erreur lors du téléchargement :', error);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Jour${getDayNumberFromLocation()}_Son${trackId}_${title.replace(/\s+/g, '_')}.mp3`;
+    a.target = '_blank';
+    a.click();
   }
 
   setTimeout(() => {
-    btn.innerHTML = originalHTML;
-    btn.classList.remove('bg-emerald-500/30');
-    if (window.lucide) {
-      window.lucide.createIcons();
+    if (btn) {
+      btn.innerHTML = originalHTML;
+      btn.classList.remove('bg-emerald-500/30');
+      if (window.lucide) window.lucide.createIcons();
     }
   }, 2000);
 }
@@ -708,4 +720,3 @@ function jour1HideMobilePlayer() {
   if (!bar) return;
   bar.classList.add('translate-y-full');
 }
-
