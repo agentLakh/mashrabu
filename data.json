@@ -440,6 +440,27 @@
           "type": "Kourel"
         }
       ]
+    },
+    {
+      "jour": 10,
+      "titre": "Kourel Serigne Massamba Mbacke",
+      "titre_ar": "كورال الشيخ صالح مبكي",
+      "sons": [
+        {
+          "id": 1,
+          "nom": "Son 1 - Mukhadimatul Amdah",
+          "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772327626/J10_MUKHADAMATUL_AMDAH_WKSM_KUREL_WAKEUR_SERIGNE_MASSAMBA_HT_qkjfjt.mp3",
+          "duree": "1:03:58",
+          "type": "Kourel"
+        },
+        {
+          "id": 2,
+          "nom": "Son 2 - Farij",
+          "url": "https://res.cloudinary.com/di6v7kx29/video/upload/v1772326746/J10_FARIJ_HT_KUREL_WAKEUR_SERIGNE_MASSAMBA_HT_bd2g8h.mp3",
+          "duree": "2:09",
+          "type": "Kourel"
+        }
+      ]
     }
   ]
 }
