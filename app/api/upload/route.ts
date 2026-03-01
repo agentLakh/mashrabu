@@ -58,6 +58,4 @@ export async function POST(req: NextRequest) {
 }
 
 // Augmente la limite de taille des fichiers (50MB)
-export const config = {
-  api: { bodyParser: false },
-};
+export const maxDuration = 60;
