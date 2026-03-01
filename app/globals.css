@@ -1,0 +1,140 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Fonts ── */
+.arabic-text { font-family: 'Amiri', serif; }
+body { font-family: 'Inter', sans-serif; }
+
+/* ── Scrolling background ── */
+.scrolling-container {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  overflow: hidden; pointer-events: none; z-index: 0; opacity: 0.06;
+}
+.scrolling-text {
+  font-family: 'Amiri', serif;
+  font-size: 2rem; color: #fbbf24;
+  white-space: nowrap; position: absolute;
+  animation: scrollText 25s linear infinite;
+}
+@media (min-width: 768px) { .scrolling-text { font-size: 3.5rem; } }
+.scrolling-text:nth-child(1) { top: 15%; animation-delay: 0s; }
+.scrolling-text:nth-child(2) { top: 45%; animation-delay: -12s; }
+.scrolling-text:nth-child(3) { top: 75%; animation-delay: -6s; }
+.scrolling-text:nth-child(4) { top: 85%; animation-delay: -18s; }
+@keyframes scrollText {
+  0% { transform: translateX(100vw); }
+  100% { transform: translateX(-100%); }
+}
+
+/* ── Pattern bg ── */
+.pattern-bg {
+  background-image: radial-gradient(#fbbf24 1px, transparent 1px);
+  background-size: 30px 30px; opacity: 0.02;
+}
+
+/* ── Day card ── */
+.day-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: linear-gradient(135deg, rgba(6,78,59,0.8) 0%, rgba(5,150,105,0.4) 100%);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(251,191,36,0.2);
+}
+.day-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 25px 50px -12px rgba(251,191,36,0.25), 0 0 30px rgba(5,150,105,0.3);
+  border-color: rgba(251,191,36,0.5);
+  background: linear-gradient(135deg, rgba(6,78,59,0.95) 0%, rgba(5,150,105,0.6) 100%);
+}
+
+/* ── Audio row ── */
+.audio-row {
+  transition: all 0.3s ease;
+  background: rgba(6,78,59,0.4);
+  border-left: 3px solid transparent;
+}
+.audio-row:hover {
+  background: rgba(6,78,59,0.7);
+  border-left-color: rgba(251,191,36,0.3);
+}
+.audio-row.playing {
+  background: linear-gradient(90deg, rgba(251,191,36,0.15) 0%, rgba(6,78,59,0.6) 100%);
+  border-left: 4px solid #fbbf24;
+}
+
+/* ── Number badge ── */
+.number-badge {
+  background: rgba(251,191,36,0.15);
+  border: 1px solid rgba(251,191,36,0.3);
+  color: #fbbf24; font-weight: 700;
+}
+
+/* ── Btn icon ── */
+.btn-play {
+  background: linear-gradient(135deg, #059669, #047857);
+  border: 1px solid rgba(251,191,36,0.3);
+  color: white;
+}
+.btn-play:hover { background: linear-gradient(135deg, #10b981, #059669); }
+.btn-download {
+  background: rgba(251,191,36,0.15);
+  border: 1px solid rgba(251,191,36,0.3);
+  color: #fbbf24;
+}
+.btn-download:hover { background: rgba(251,191,36,0.3); }
+
+/* ── Equalizer bars ── */
+.eq-bar {
+  width: 3px; border-radius: 2px; background: #fbbf24;
+  animation: eqBounce 0.8s infinite ease-in-out;
+}
+.eq-bar:nth-child(1) { height: 8px; animation-delay: 0s; }
+.eq-bar:nth-child(2) { height: 14px; animation-delay: 0.15s; }
+.eq-bar:nth-child(3) { height: 10px; animation-delay: 0.3s; }
+@keyframes eqBounce {
+  0%, 100% { transform: scaleY(0.4); }
+  50% { transform: scaleY(1); }
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #022c22; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #fbbf24, #059669);
+  border-radius: 4px;
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+  /* Header jour */
+  .day-header-box { padding: 12px !important; }
+  .day-header-box h1 { font-size: 1.1rem !important; }
+  .day-header-box h2 { font-size: 0.85rem !important; }
+  .date-badge { width: 44px !important; height: 44px !important; overflow: hidden !important; }
+  .date-badge .date-num { font-size: 1rem !important; line-height: 1 !important; }
+  .date-badge .date-month { font-size: 0.5rem !important; }
+
+  /* List header */
+  .list-header h3 { font-size: 0.9rem !important; }
+  .list-header h3 svg { width: 16px !important; height: 16px !important; }
+  #trackCount { font-size: 0.65rem !important; padding: 3px 8px !important; white-space: nowrap !important; }
+
+  /* Audio row */
+  .audio-row { padding: 8px 10px !important; }
+  .number-badge { width: 32px !important; height: 32px !important; min-width: 32px !important; font-size: 0.7rem !important; border-radius: 6px !important; }
+
+  /* Titre */
+  .audio-row h4 { font-size: 0.78rem !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
+
+  /* Metadata */
+  .audio-meta { font-size: 0.6rem !important; gap: 4px !important; flex-wrap: nowrap !important; overflow: hidden !important; }
+  .audio-meta .type-badge { padding: 0 3px !important; font-size: 0.55rem !important; }
+  .audio-meta .dot { display: none !important; }
+
+  /* Boutons */
+  .audio-row .btn-icon { width: 32px !important; height: 32px !important; min-width: 32px !important; border-radius: 8px !important; }
+  .audio-row .btn-icon svg { width: 12px !important; height: 12px !important; }
+  .btn-group { gap: 6px !important; }
+
+  #playerBar { padding-bottom: calc(12px + env(safe-area-inset-bottom)) !important; }
+}
