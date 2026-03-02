@@ -192,37 +192,86 @@ export default function AdminDashboardClient({ editions: initialEditions = [], j
     if (!formFile || !selectedJour) return;
     setUploading(true);
     setFormError('');
-    setUploadProgress('Upload en cours...');
-
-    const fd = new FormData();
-    fd.append('file', formFile);
-    fd.append('nom', formNom);
-    fd.append('type', formType);
-    fd.append('jour_id', String(selectedJour.id));
-    fd.append('ordre', String(sons.length + 1));
-
-    const res = await fetch('/api/upload', { method: 'POST', body: fd });
-    const data = await res.json();
-
-    if (!res.ok) {
-      setFormError(data.error || "Erreur lors de l'upload");
+    setUploadProgress('Préparation...');
+  
+    try {
+      // 1 — Récupère la signature
+      const sigRes = await fetch('/api/upload');
+      const { signature, timestamp, folder, cloud_name, api_key } = await sigRes.json();
+  
+      // 2 — Upload direct vers Cloudinary via XHR pour avoir la progression
+      const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${cloud_name}/video/upload`;
+      const fd = new FormData();
+      fd.append('file', formFile);
+      fd.append('api_key', api_key);
+      fd.append('timestamp', String(timestamp));
+      fd.append('signature', signature);
+      fd.append('folder', folder);
+      fd.append('resource_type', 'video');
+  
+      const cloudRes = await new Promise<any>((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', cloudinaryUrl);
+        xhr.upload.onprogress = (event) => {
+          if (event.lengthComputable) {
+            const pct = Math.round((event.loaded / event.total) * 100);
+            if (pct < 100) {
+              setUploadProgress(`Envoi... ${pct}%`);
+            } else {
+              setUploadProgress('⚙️ Traitement Cloudinary...');
+            }
+          }
+        };
+        xhr.onload = () => {
+          if (xhr.status === 200) resolve(JSON.parse(xhr.responseText));
+          else {
+            console.error('Cloudinary error:', xhr.responseText);
+            try {
+              reject(new Error(JSON.parse(xhr.responseText)?.error?.message || 'Erreur Cloudinary'));
+            } catch {
+              reject(new Error(xhr.responseText || 'Erreur Cloudinary'));
+            }
+          }
+        };
+        xhr.onerror = () => reject(new Error('Erreur réseau'));
+        xhr.send(fd);
+      });
+  
+      // 3 — Sauvegarde en base
+      setUploadProgress('💾 Sauvegarde...');
+      const saveRes = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jour_id: selectedJour.id,
+          nom: formNom,
+          type: formType,
+          ordre: sons.length + 1,
+          url: cloudRes.secure_url,
+          duration: cloudRes.duration || 0,
+        }),
+      });
+  
+      if (!saveRes.ok) throw new Error('Erreur sauvegarde');
+  
+      setUploadProgress('✓ Ajouté avec succès !');
+      setUploading(false);
+  
+      const { data: fresh } = await supabase
+        .from('sons')
+        .select('*')
+        .eq('jour_id', selectedJour.id)
+        .order('ordre', { ascending: true });
+      setSons(fresh || []);
+  
+      setFormNom(''); setFormType('Kourel'); setFormFile(null);
+      setTimeout(() => { setUploadProgress(''); setShowForm(false); }, 1000);
+  
+    } catch (err: any) {
+      setFormError(err.message);
       setUploading(false);
       setUploadProgress('');
-      return;
     }
-
-    setUploadProgress('✓ Ajouté avec succès !');
-    setUploading(false);
-
-    const { data: fresh } = await supabase
-      .from('sons')
-      .select('*')
-      .eq('jour_id', selectedJour.id)
-      .order('ordre', { ascending: true });
-    setSons(fresh || []);
-
-    setFormNom(''); setFormType('Kourel'); setFormFile(null);
-    setTimeout(() => { setUploadProgress(''); setShowForm(false); }, 1000);
   }
 
   async function deleteSon(sonId: number) {
@@ -457,7 +506,25 @@ export default function AdminDashboardClient({ editions: initialEditions = [], j
                       <input type="file" accept="audio/*,.mp3,.m4a,.ogg,.wav" onChange={(e) => setFormFile(e.target.files?.[0] || null)} className="w-full text-sm text-emerald-300 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:text-white file:bg-emerald-700 hover:file:bg-emerald-600" required />
                     </div>
                     {formError && <p className="text-red-400 text-sm">{formError}</p>}
-                    {uploadProgress && <p className="text-emerald-400 text-sm">{uploadProgress}</p>}
+                    {uploadProgress && (
+  <div className="space-y-1">
+    <p className="text-emerald-400 text-sm">{uploadProgress}</p>
+    {uploading && (
+      <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(6,78,59,0.5)' }}>
+        <div
+          className="h-full rounded-full transition-all duration-300"
+          style={{
+            background: 'linear-gradient(to right, #059669, #fbbf24)',
+            width: uploadProgress.includes('%')
+              ? uploadProgress.match(/(\d+)%/)?.[1] + '%'
+              : '100%',
+            animation: !uploadProgress.includes('%') ? 'pulse 1.5s infinite' : 'none'
+          }}
+        />
+      </div>
+    )}
+  </div>
+)}
                     <button type="submit" disabled={uploading} className="w-full py-2.5 rounded-lg font-semibold text-white text-sm" style={{ background: uploading ? 'rgba(5,150,105,0.4)' : 'linear-gradient(135deg, #059669, #047857)' }}>
                       {uploading ? 'Upload en cours...' : 'Uploader et ajouter'}
                     </button>
