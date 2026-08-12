@@ -104,7 +104,7 @@ export default async function JourPage({ params }: { params: { annee: string; id
           </div>
         </header>
 
-        <AudioList sons={sons} jourTitre={jour.titre} jourNumero={jour.numero} />
+        <AudioList sons={sons} jourTitre={jour.titre} jourNumero={jour.numero} annee={annee} />
 
         <div className="h-24 md:h-8"></div>
         <footer className="mt-12 text-center text-emerald-400/40 text-sm pb-8">

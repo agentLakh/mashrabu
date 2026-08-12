@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import type { Son } from '@/lib/supabase';
 
 const PLAY_SVG = (
@@ -30,80 +31,180 @@ function formatTime(sec: number): string {
   return `${m}:${s}`;
 }
 
-export default function AudioList({ sons, jourTitre, jourNumero }: { sons: Son[]; jourTitre: string; jourNumero: number }) {
+const COUNTDOWN = 5;
+
+export default function AudioList({
+  sons,
+  jourTitre,
+  jourNumero,
+  annee,
+  totalJours = 30,
+}: {
+  sons: Son[];
+  jourTitre: string;
+  jourNumero: number;
+  annee: number;
+  totalJours?: number;
+}) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const [playingId, setPlayingId] = useState<number | null>(null);
-  const [pausedId, setPausedId] = useState<number | null>(null); // lecteur visible mais en pause
+  const [pausedId, setPausedId] = useState<number | null>(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isSeeking, setIsSeeking] = useState(false);
   const audiosRef = useRef<Record<number, HTMLAudioElement>>({});
+  const bannerShownForRef = useRef<number | null>(null);
 
+  const [nextBanner, setNextBanner] = useState<{
+    visible: boolean;
+    label: string;
+    countdown: number;
+    type: 'son' | 'jour';
+    targetSonId?: number;
+    targetJour?: number;
+  } | null>(null);
+  const countdownRef = useRef<NodeJS.Timeout | null>(null);
+
+  const playSon = useCallback((son: Son) => {
+    const audio = audiosRef.current[son.id];
+    if (!audio) return;
+    Object.entries(audiosRef.current).forEach(([id, a]) => {
+      if (Number(id) !== son.id) { a.pause(); a.currentTime = 0; }
+    });
+    setCurrentTime(audio.currentTime);
+    setDuration(audio.duration || 0);
+    audio.play().catch(console.error);
+    setPlayingId(son.id);
+    setPausedId(null);
+    if (!audio.duration) {
+      audio.addEventListener('loadedmetadata', () => setDuration(audio.duration), { once: true });
+    }
+  }, []);
+
+  const dismissBanner = useCallback(() => {
+    if (countdownRef.current) clearInterval(countdownRef.current);
+    setNextBanner(null);
+  }, []);
+
+  const goNextNow = useCallback((banner: NonNullable<typeof nextBanner>) => {
+    if (countdownRef.current) clearInterval(countdownRef.current);
+    setNextBanner(null);
+    if (banner.type === 'son' && banner.targetSonId !== undefined) {
+      const nextSon = sons.find(s => s.id === banner.targetSonId);
+      if (nextSon) playSon(nextSon);
+    } else if (banner.type === 'jour' && banner.targetJour !== undefined) {
+      Object.values(audiosRef.current).forEach(a => { a.pause(); a.currentTime = 0; });
+      setPlayingId(null); setPausedId(null);
+      router.push(`/${annee}/jour/${banner.targetJour}?autoplay=1`);
+    }
+  }, [sons, playSon, router, annee]);
+
+  const showNextBanner = useCallback((
+    type: 'son' | 'jour',
+    targetSonId?: number,
+    targetJour?: number,
+    label?: string
+  ) => {
+    if (countdownRef.current) clearInterval(countdownRef.current);
+    let count = COUNTDOWN;
+    const banner = { visible: true, label: label || '', countdown: count, type, targetSonId, targetJour };
+    setNextBanner(banner);
+
+    countdownRef.current = setInterval(() => {
+      count--;
+      setNextBanner(prev => prev ? { ...prev, countdown: count } : null);
+      if (count <= 0) {
+        clearInterval(countdownRef.current!);
+        setNextBanner(null);
+        if (type === 'son' && targetSonId !== undefined) {
+          const nextSon = sons.find(s => s.id === targetSonId);
+          if (nextSon) playSon(nextSon);
+        } else if (type === 'jour' && targetJour !== undefined) {
+          Object.values(audiosRef.current).forEach(a => { a.pause(); a.currentTime = 0; });
+          setPlayingId(null); setPausedId(null);
+          router.push(`/${annee}/jour/${targetJour}?autoplay=1`);
+        }
+      }
+    }, 1000);
+  }, [sons, playSon, router, annee]);
+
+  // Init audios
   useEffect(() => {
     sons.forEach((son) => {
       const audio = new Audio();
       audio.crossOrigin = 'anonymous';
       audio.preload = 'none';
       audio.src = son.url;
+
       audio.addEventListener('ended', () => {
         setPlayingId(null);
         setPausedId(null);
       });
+
       audio.addEventListener('timeupdate', () => {
         if (!isSeeking) setCurrentTime(audio.currentTime);
+
+        if (audio.duration && audio.currentTime > 0) {
+          const remaining = audio.duration - audio.currentTime;
+          if (remaining <= COUNTDOWN && remaining > 0 && bannerShownForRef.current !== son.id) {
+            bannerShownForRef.current = son.id;
+            const currentIndex = sons.findIndex(s => s.id === son.id);
+            const nextSon = sons[currentIndex + 1];
+            if (nextSon) {
+              showNextBanner('son', nextSon.id, undefined, nextSon.nom);
+            } else if (jourNumero < totalJours) {
+              showNextBanner('jour', undefined, jourNumero + 1, `Jour ${jourNumero + 1}`);
+            }
+          }
+        }
       });
-      audio.addEventListener('loadedmetadata', () => {
-        setDuration(audio.duration);
-      });
+
+      audio.addEventListener('loadedmetadata', () => setDuration(audio.duration));
       audiosRef.current[son.id] = audio;
     });
+
     return () => {
-      Object.values(audiosRef.current).forEach((a) => { a.pause(); a.src = ''; });
+      if (countdownRef.current) clearInterval(countdownRef.current);
+      Object.values(audiosRef.current).forEach(a => { a.pause(); a.src = ''; });
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sons]);
 
-  // Ferme complètement le lecteur (bouton X)
+  // Autoplay si on arrive depuis le jour précédent
+  useEffect(() => {
+    if (searchParams.get('autoplay') === '1' && sons.length > 0) {
+      setTimeout(() => playSon(sons[0]), 600);
+    }
+  }, [searchParams, sons]);
+
   function stopAll() {
     const id = playingId ?? pausedId;
     if (id !== null) {
       const audio = audiosRef.current[id];
       if (audio) { audio.pause(); audio.currentTime = 0; }
     }
-    setPlayingId(null);
-    setPausedId(null);
-    setCurrentTime(0);
-    setDuration(0);
+    setPlayingId(null); setPausedId(null);
+    setCurrentTime(0); setDuration(0);
+    dismissBanner();
   }
 
   function togglePlay(son: Son) {
     const audio = audiosRef.current[son.id];
     if (!audio) return;
-
     if (playingId === son.id) {
-      // Met en pause — lecteur reste visible
       audio.pause();
       setPlayingId(null);
       setPausedId(son.id);
+      dismissBanner();
     } else if (pausedId === son.id) {
-      // Reprend depuis la pause
       audio.play().catch(console.error);
       setPlayingId(son.id);
       setPausedId(null);
     } else {
-      // Nouveau son — arrête le précédent
-      const prevId = playingId ?? pausedId;
-      if (prevId !== null) {
-        const prev = audiosRef.current[prevId];
-        if (prev) { prev.pause(); prev.currentTime = 0; }
-      }
-      setCurrentTime(audio.currentTime);
-      setDuration(audio.duration || 0);
-      audio.play().catch(console.error);
-      setPlayingId(son.id);
-      setPausedId(null);
-      if (!audio.duration) {
-        audio.addEventListener('loadedmetadata', () => setDuration(audio.duration), { once: true });
-      }
+      bannerShownForRef.current = null;
+      playSon(son);
+      dismissBanner();
     }
   }
 
@@ -116,8 +217,9 @@ export default function AudioList({ sons, jourTitre, jourNumero }: { sons: Son[]
   }
 
   const activeId = playingId ?? pausedId;
-  const playingTitle = activeId !== null ? sons.find((s) => s.id === activeId)?.nom : null;
+  const playingTitle = activeId !== null ? sons.find(s => s.id === activeId)?.nom : null;
   const showPlayer = activeId !== null;
+  const countdownPct = nextBanner ? (nextBanner.countdown / COUNTDOWN) * 100 : 0;
 
   return (
     <>
@@ -135,12 +237,12 @@ export default function AudioList({ sons, jourTitre, jourNumero }: { sons: Son[]
           </span>
         </div>
 
-        {/* Global player — visible si en lecture OU en pause */}
+        {/* Global player */}
         {showPlayer && (
           <div className="px-4 py-3 md:px-6 md:py-4" style={{ borderBottom: '1px solid rgba(251,191,36,0.1)', background: 'rgba(2,11,8,0.6)' }}>
             <div className="flex items-center gap-4">
               <button
-                onClick={() => togglePlay(sons.find((s) => s.id === activeId)!)}
+                onClick={() => togglePlay(sons.find(s => s.id === activeId)!)}
                 className="w-10 h-10 rounded-full flex items-center justify-center text-amber-300"
                 style={{ background: 'rgba(245,158,11,0.2)' }}
               >
@@ -154,14 +256,13 @@ export default function AudioList({ sons, jourTitre, jourNumero }: { sons: Son[]
                     type="range" min={0} max={Math.floor(duration) || 0} value={Math.floor(currentTime)}
                     onMouseDown={() => setIsSeeking(true)}
                     onMouseUp={() => setIsSeeking(false)}
-                    onChange={(e) => handleSeek(Number(e.target.value))}
+                    onChange={e => handleSeek(Number(e.target.value))}
                     className="flex-1 h-1 rounded-lg cursor-pointer accent-amber-400"
                     style={{ background: 'rgba(6,78,59,0.6)' }}
                   />
                   <span className="text-xs text-emerald-300/80">{formatTime(duration)}</span>
                 </div>
               </div>
-              {/* X — ferme complètement le lecteur */}
               <button
                 onClick={stopAll}
                 className="w-9 h-9 rounded-full flex items-center justify-center text-red-300"
@@ -175,12 +276,12 @@ export default function AudioList({ sons, jourTitre, jourNumero }: { sons: Son[]
           </div>
         )}
 
-        {/* Audio rows — toute la ligne est cliquable */}
+        {/* Audio rows */}
         <div className="divide-y divide-amber-400/20">
           {sons.length === 0 ? (
             <div className="p-8 text-center text-emerald-300/60">Aucune piste audio disponible pour ce jour.</div>
           ) : (
-            sons.map((son) => {
+            sons.map(son => {
               const isPlaying = playingId === son.id;
               const isActive = activeId === son.id;
               return (
@@ -189,7 +290,6 @@ export default function AudioList({ sons, jourTitre, jourNumero }: { sons: Son[]
                   className={`audio-row p-5 md:p-6 flex items-center justify-between group cursor-pointer${isActive ? ' playing' : ''}`}
                   onClick={() => togglePlay(son)}
                 >
-                  {/* Left: number + title */}
                   <div className="flex items-center flex-1 min-w-0 mr-4">
                     <div className="number-badge w-10 h-10 rounded-xl flex items-center justify-center mr-3 flex-shrink-0">
                       <span className="text-xl font-bold">{String(son.ordre).padStart(2, '0')}</span>
@@ -217,9 +317,7 @@ export default function AudioList({ sons, jourTitre, jourNumero }: { sons: Son[]
                       </div>
                     </div>
                   </div>
-
-                  {/* Buttons — stoppe la propagation pour éviter double toggle */}
-                  <div className="btn-group flex items-center space-x-3" onClick={(e) => e.stopPropagation()}>
+                  <div className="btn-group flex items-center space-x-3" onClick={e => e.stopPropagation()}>
                     <button
                       onClick={() => togglePlay(son)}
                       className="btn-icon btn-play w-12 h-12 rounded-xl flex items-center justify-center text-white shadow-lg"
@@ -247,6 +345,72 @@ export default function AudioList({ sons, jourTitre, jourNumero }: { sons: Son[]
           Cliquez sur lecture pour écouter ou sur le bouton télécharger pour sauvegarder
         </div>
       </div>
+
+      {/* Bannière "suivant" style Netflix */}
+      {nextBanner?.visible && (
+        <div className="fixed bottom-6 right-6 z-50" style={{ animation: 'slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1)' }}>
+          <div
+            className="relative overflow-hidden rounded-2xl px-5 py-4"
+            style={{
+              background: 'rgba(2, 20, 14, 0.92)',
+              border: '1px solid rgba(251,191,36,0.3)',
+              backdropFilter: 'blur(16px)',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(251,191,36,0.1)',
+              minWidth: '260px',
+              maxWidth: '320px',
+            }}
+          >
+            {/* Barre countdown */}
+            <div
+              className="absolute bottom-0 left-0 h-0.5 rounded-full"
+              style={{
+                width: `${countdownPct}%`,
+                background: 'linear-gradient(to right, #059669, #f59e0b)',
+                transition: 'width 1s linear',
+              }}
+            />
+
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex-1 min-w-0">
+                <p className="text-emerald-400/70 text-xs uppercase tracking-wider mb-1">
+                  {nextBanner.type === 'son' ? 'Son suivant' : 'Jour suivant'} dans {nextBanner.countdown}s
+                </p>
+                <p className="text-white font-semibold text-sm truncate">{nextBanner.label}</p>
+              </div>
+              <button
+                onClick={dismissBanner}
+                className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-emerald-400/50 hover:text-white transition-colors mt-0.5"
+                style={{ background: 'rgba(255,255,255,0.05)' }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <button
+              onClick={() => goNextNow(nextBanner)}
+              className="mt-3 w-full flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-semibold text-white transition-all"
+              style={{
+                background: 'linear-gradient(135deg, rgba(5,150,105,0.6), rgba(245,158,11,0.3))',
+                border: '1px solid rgba(251,191,36,0.2)',
+              }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="5,3 19,12 5,21" />
+              </svg>
+              Lire maintenant
+            </button>
+          </div>
+        </div>
+      )}
+
+      <style jsx>{`
+        @keyframes slideInRight {
+          from { opacity: 0; transform: translateX(40px) scale(0.95); }
+          to   { opacity: 1; transform: translateX(0) scale(1); }
+        }
+      `}</style>
     </>
   );
 }
