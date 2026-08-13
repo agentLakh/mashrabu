@@ -97,7 +97,7 @@ export default function AudioList({
     } else if (banner.type === 'jour' && banner.targetJour !== undefined) {
       Object.values(audiosRef.current).forEach(a => { a.pause(); a.currentTime = 0; });
       setPlayingId(null); setPausedId(null);
-      router.push(`/${annee}/jour/${banner.targetJour}?autoplay=1`);
+      router.push(`/ramadan/${annee}/jour/${banner.targetJour}?autoplay=1`);
     }
   }, [sons, playSon, router, annee]);
 
@@ -124,7 +124,7 @@ export default function AudioList({
         } else if (type === 'jour' && targetJour !== undefined) {
           Object.values(audiosRef.current).forEach(a => { a.pause(); a.currentTime = 0; });
           setPlayingId(null); setPausedId(null);
-          router.push(`/${annee}/jour/${targetJour}?autoplay=1`);
+          router.push(`/ramadan/${annee}/jour/${targetJour}?autoplay=1`);
         }
       }
     }, 1000);
